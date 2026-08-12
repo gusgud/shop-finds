@@ -123,4 +123,14 @@ const products = [
     description: "Selimut weighted ringan yang bikin tidur lebih nyenyak, bahan lembut dan adem.",
     shopee: "https://shopee.co.id/product/PASTE_AFFILIATE_LINK_100"
   }
-  ];
+  {
+    id: 1,
+    name: "Kipas USB Mini Digital",
+    category: "Elektronik",
+    keywords: ["kipas", "fan", "kipas elektrik"],
+    image: "https://imgur.com/a/fyElvZB",
+    price: "Rp. 36.800",
+    description: "Kipas USB Mini Digital dengan Display dan Pengaturan Kecepatan [Motor Turbo] Motor turbo brushless dengan kecepatan 13000 RPM menghasilkan udara dingin kuat【Portabel] Berat hanya 173 gram, mudah dibawa ke mana saja 【Layar LED] Tampilkan kecepatan angin dan tingkat baterai secara visual",
+    shopee: "https://s.shopee.co.id/AUt9Edz3qI?exp_info=tt_dBk6o9gP"
+  },
+   ];
