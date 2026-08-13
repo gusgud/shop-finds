@@ -16,6 +16,6 @@
    ========================================================== */
 
 const SUPABASE_URL = "https://bxcuzgdhuiuunaeelwrl.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_7leO3SlLoVlVdIM4V35c4w_udX-0JCl";
+const SUPABASE_ANON_KEY = "sb_publishable_7leO3SlLoVlVdIM4V35c4w_udX-0JCl-0JCl";
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
