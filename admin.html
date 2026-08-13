@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Admin — heynuvora</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+
+<style>
+  /* ===== admin-only additions on top of style.css tokens ===== */
+  body{padding-bottom:40px;}
+  .admin-shell{max-width:640px;margin:0 auto;padding:0 var(--pad) 40px;}
+
+  /* login */
+  .login-wrap{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    padding:24px;
+  }
+  .login-card{
+    width:100%;max-width:360px;background:var(--surface);
+    border:1px solid var(--border);border-radius:var(--radius-lg);
+    padding:28px 24px;
+  }
+  .login-card h1{font-size:20px;margin:0 0 4px;font-weight:700;}
+  .login-card p{font-size:13px;color:var(--muted);margin:0 0 20px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;}
+  .field input, .field select, .field textarea{
+    width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);
+    background:var(--surface);font-family:var(--font-body);font-size:14px;color:var(--text);
+  }
+  .field textarea{min-height:80px;resize:vertical;}
+  .field-hint{font-size:11.5px;color:var(--muted);margin-top:4px;}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    padding:13px 18px;border-radius:999px;border:none;
+    background:var(--accent);color:#fff;font-weight:600;font-size:14px;cursor:pointer;
+    width:100%;
+  }
+  .btn:active{transform:scale(0.98);}
+  .btn.secondary{background:var(--text);}
+  .btn.ghost{background:var(--surface);color:var(--text);border:1px solid var(--border);}
+  .btn.danger{background:#a4453a;}
+  .btn.small{width:auto;padding:9px 14px;font-size:12.5px;}
+  .msg{font-size:12.5px;margin-top:10px;}
+  .msg.error{color:#a4453a;}
+  .msg.success{color:#4a6b45;}
+
+  /* admin topbar + tabs */
+  .admin-top{
+    position:sticky;top:0;z-index:20;background:var(--background);
+    padding:16px 0 10px;display:flex;align-items:center;justify-content:space-between;
+  }
+  .admin-top h1{font-size:17px;margin:0;font-weight:700;}
+  .tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:14px;scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab-btn{
+    flex:0 0 auto;padding:9px 16px;border-radius:999px;border:1px solid var(--border);
+    background:var(--surface);font-size:13px;font-weight:500;cursor:pointer;color:var(--text);
+  }
+  .tab-btn.active{background:var(--text);color:#fff;border-color:var(--text);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  /* dashboard stats */
+  .date-filters{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;}
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px;}
+  .stat-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:16px;
+    padding:14px;
+  }
+  .stat-card .num{font-size:22px;font-weight:700;font-family:var(--font-display);}
+  .stat-card .label{font-size:11.5px;color:var(--muted);margin-top:2px;}
+  .list-block{margin-bottom:22px;}
+  .list-block h3{font-size:13px;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);margin:0 0 10px;}
+  .list-row{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;
+  }
+  .list-row:last-child{border-bottom:none;}
+  .list-row .name{font-weight:600;}
+  .list-row .meta{color:var(--muted);font-size:12px;}
+
+  /* products list */
+  .admin-search{
+    display:flex;align-items:center;gap:8px;background:var(--surface);
+    border:1px solid var(--border);border-radius:999px;padding:10px 14px;margin-bottom:14px;
+  }
+  .admin-search input{border:none;outline:none;background:none;flex:1;font-size:14px;color:var(--text);}
+  .prod-item{
+    background:var(--surface);border:1px solid var(--border);border-radius:16px;
+    padding:14px;margin-bottom:10px;
+  }
+  .prod-item-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;}
+  .prod-item .pnum{font-family:var(--font-mono);font-weight:700;color:var(--accent);font-size:12px;}
+  .prod-item .pname{font-weight:600;margin:2px 0 4px;}
+  .prod-item .pmeta{font-size:12px;color:var(--muted);}
+  .status-badge{
+    font-size:10.5px;font-weight:600;padding:4px 9px;border-radius:999px;text-transform:uppercase;
+    letter-spacing:0.03em;white-space:nowrap;
+  }
+  .status-badge.active{background:#E4EEDF;color:#3F6136;}
+  .status-badge.draft{background:#EDE7D8;color:#8A7A3E;}
+  .status-badge.hidden{background:#EFE9E3;color:#8B887F;}
+  .prod-stats{display:flex;gap:14px;margin:10px 0;font-size:12px;color:var(--muted);}
+  .prod-actions{display:flex;flex-wrap:wrap;gap:8px;}
+
+  /* form overlay */
+  .form-overlay{
+    position:fixed;inset:0;background:var(--background);z-index:60;
+    overflow-y:auto;display:none;
+  }
+  .form-overlay.open{display:block;}
+  .form-inner{max-width:560px;margin:0 auto;padding:16px var(--pad) 40px;}
+  .form-topbar{display:flex;align-items:center;justify-content:space-between;padding:8px 0 16px;}
+  .form-topbar h2{font-size:17px;margin:0;font-weight:700;}
+  .img-preview{
+    width:100%;aspect-ratio:1/1;max-width:220px;border-radius:16px;overflow:hidden;
+    background:var(--accent-soft);margin-bottom:10px;display:flex;align-items:center;justify-content:center;
+  }
+  .img-preview img{width:100%;height:100%;object-fit:cover;}
+  .img-preview .placeholder{color:var(--muted);font-size:12px;}
+
+  .hidden{display:none !important;}
+  .spinner-inline{font-size:12.5px;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <h1>heynuvora admin</h1>
+    <p>Masuk untuk kelola produk dan lihat analytics.</p>
+    <div class="field">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" autocomplete="username" />
+    </div>
+    <div class="field">
+      <label for="loginPassword">Password</label>
+      <input type="password" id="loginPassword" autocomplete="current-password" />
+    </div>
+    <button class="btn" id="loginBtn">Masuk</button>
+    <div class="msg error hidden" id="loginMsg"></div>
+  </div>
+</div>
+
+<!-- ============ ADMIN APP ============ -->
+<div class="admin-shell hidden" id="adminApp">
+  <div class="admin-top">
+    <h1>Admin</h1>
+    <button class="btn ghost small" id="logoutBtn">Keluar</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+    <button class="tab-btn" data-tab="products">Produk</button>
+    <button class="tab-btn" data-tab="settings">Settings</button>
+    <button class="tab-btn" data-tab="migrate">Migrasi</button>
+  </div>
+
+  <!-- ===== DASHBOARD TAB ===== -->
+  <section class="tab-panel active" id="tab-dashboard">
+    <div class="date-filters" id="dateFilters">
+      <button class="tab-btn active" data-range="today">Hari ini</button>
+      <button class="tab-btn" data-range="7d">7 Hari</button>
+      <button class="tab-btn" data-range="30d">30 Hari</button>
+      <button class="tab-btn" data-range="all">Semua</button>
+    </div>
+
+    <div class="stat-grid" id="statGrid">
+      <div class="stat-card"><div class="num" id="statTotal">–</div><div class="label">Total Produk</div></div>
+      <div class="stat-card"><div class="num" id="statActive">–</div><div class="label">Produk Aktif</div></div>
+      <div class="stat-card"><div class="num" id="statHidden">–</div><div class="label">Draft + Hidden</div></div>
+      <div class="stat-card"><div class="num" id="statViews">–</div><div class="label">Total Views</div></div>
+      <div class="stat-card"><div class="num" id="statClicks">–</div><div class="label">Klik Shopee</div></div>
+      <div class="stat-card"><div class="num" id="statCtr">–</div><div class="label">CTR Keseluruhan</div></div>
+    </div>
+
+    <div class="list-block">
+      <h3>Top produk — views</h3>
+      <div id="topViewsList"></div>
+    </div>
+    <div class="list-block">
+      <h3>Top produk — klik shopee</h3>
+      <div id="topClicksList"></div>
+    </div>
+    <div class="list-block">
+      <h3>Top produk — CTR</h3>
+      <div id="topCtrList"></div>
+    </div>
+    <div class="list-block">
+      <h3>Top pencarian</h3>
+      <div id="topSearchList"></div>
+    </div>
+  </section>
+
+  <!-- ===== PRODUCTS TAB ===== -->
+  <section class="tab-panel" id="tab-products">
+    <div class="admin-search">
+      <input type="text" id="adminSearchInput" placeholder="Cari nomor, nama, atau kategori..." />
+    </div>
+    <button class="btn" id="addProductBtn" style="margin-bottom:16px;">+ Tambah Produk</button>
+    <div id="adminProductList"></div>
+  </section>
+
+  <!-- ===== SETTINGS TAB ===== -->
+  <section class="tab-panel" id="tab-settings">
+    <div class="field">
+      <label>Nama Website</label>
+      <input type="text" id="settingsSiteName" />
+    </div>
+    <div class="field">
+      <label>Tagline</label>
+      <input type="text" id="settingsTagline" />
+    </div>
+    <div class="field">
+      <label>Logo</label>
+      <div class="img-preview" id="logoPreview"><span class="placeholder">Belum ada logo</span></div>
+      <input type="file" id="settingsLogoFile" accept="image/*" />
+    </div>
+    <div class="field">
+      <label>Affiliate Disclosure</label>
+      <textarea id="settingsDisclosure"></textarea>
+    </div>
+    <div class="field">
+      <label>Instagram (link, opsional)</label>
+      <input type="text" id="settingsInstagram" placeholder="https://instagram.com/..." />
+    </div>
+    <div class="field">
+      <label>TikTok (link, opsional)</label>
+      <input type="text" id="settingsTiktok" placeholder="https://tiktok.com/@..." />
+    </div>
+    <div class="field">
+      <label>WhatsApp (link, opsional)</label>
+      <input type="text" id="settingsWhatsapp" placeholder="https://wa.me/..." />
+    </div>
+    <button class="btn" id="saveSettingsBtn">Simpan Settings</button>
+    <div class="msg hidden" id="settingsMsg"></div>
+  </section>
+
+  <!-- ===== MIGRATE TAB ===== -->
+  <section class="tab-panel" id="tab-migrate">
+    <p class="field-hint" style="margin-bottom:12px;">
+      Paste array produk lama dari <code>products.js</code> di sini (mulai dari <code>[</code> sampai <code>]</code>,
+      boleh sertakan <code>const products = </code> di depannya, itu akan diabaikan otomatis).
+      Produk yang nomornya sudah ada di database akan dilewati, tidak akan dobel.
+    </p>
+    <div class="field">
+      <textarea id="migrateInput" style="min-height:200px;font-family:ui-monospace,monospace;font-size:12px;"></textarea>
+    </div>
+    <button class="btn" id="migrateBtn">Migrasikan Produk</button>
+    <div class="msg hidden" id="migrateMsg" style="white-space:pre-line;"></div>
+  </section>
+</div>
+
+<!-- ============ ADD/EDIT PRODUCT FORM ============ -->
+<div class="form-overlay" id="formOverlay">
+  <div class="form-inner">
+    <div class="form-topbar">
+      <h2 id="formTitle">Tambah Produk</h2>
+      <button class="btn ghost small" id="formCloseBtn">Tutup</button>
+    </div>
+
+    <div class="field">
+      <label>Nomor Produk *</label>
+      <input type="number" id="formNumber" min="1" />
+      <div class="field-hint">Contoh: 20 → otomatis tampil sebagai #020</div>
+    </div>
+    <div class="field">
+      <label>Nama Produk *</label>
+      <input type="text" id="formName" />
+    </div>
+    <div class="field">
+      <label>Kategori *</label>
+      <select id="formCategory"></select>
+    </div>
+    <div class="field">
+      <label>Keywords (pisahkan koma)</label>
+      <input type="text" id="formKeywords" placeholder="sepatu, running, lari" />
+    </div>
+    <div class="field">
+      <label>Harga</label>
+      <input type="text" id="formPrice" placeholder="Rp 99.000" />
+    </div>
+    <div class="field">
+      <label>Deskripsi</label>
+      <textarea id="formDescription"></textarea>
+    </div>
+    <div class="field">
+      <label>Gambar Produk</label>
+      <div class="img-preview" id="formImgPreview"><span class="placeholder">Belum ada gambar</span></div>
+      <input type="file" id="formImageFile" accept="image/*" />
+      <div class="field-hint spinner-inline hidden" id="formUploadStatus">Mengupload gambar…</div>
+    </div>
+    <div class="field">
+      <label>Link Affiliate Shopee *</label>
+      <input type="text" id="formShopee" placeholder="https://shopee.co.id/..." />
+    </div>
+    <div class="field">
+      <label>Status</label>
+      <select id="formStatus">
+        <option value="draft">Draft (hanya kamu yang lihat)</option>
+        <option value="active">Aktif (tampil di katalog)</option>
+        <option value="hidden">Hidden (disembunyikan)</option>
+      </select>
+    </div>
+
+    <button class="btn" id="formSaveBtn">Simpan Produk</button>
+    <button class="btn ghost" id="formPreviewBtn" style="margin-top:10px;">Preview</button>
+    <div class="msg hidden" id="formMsg"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="categories.js"></script>
+<script>
+(function () {
+  "use strict";
+  const $ = (sel, ctx) => (ctx || document).querySelector(sel);
+  const $$ = (sel, ctx) => Array.from((ctx || document).querySelectorAll(sel));
+
+  let allProducts = [];   // every product regardless of status, for admin views
+  let currentEditId = null; // db uuid of product being edited, null = new
+  let pendingImageUrl = null;
+  let dateRange = "today";
+
+  function formatNumber(n) { return "#" + String(n).padStart(3, "0"); }
+  function escapeHtml(str){ const d=document.createElement("div"); d.textContent=str||""; return d.innerHTML; }
+
+  /* ---------- auth ---------- */
+  async function checkSession() {
+    const { data } = await supabaseClient.auth.getSession();
+    if (data.session) showApp(); else showLogin();
+  }
+  function showLogin(){
+    $("#loginWrap").classList.remove("hidden");
+    $("#adminApp").classList.add("hidden");
+  }
+  function showApp(){
+    $("#loginWrap").classList.add("hidden");
+    $("#adminApp").classList.remove("hidden");
+    initApp();
+  }
+
+  $("#loginBtn").addEventListener("click", async () => {
+    const email = $("#loginEmail").value.trim();
+    const password = $("#loginPassword").value;
+    const msg = $("#loginMsg");
+    msg.classList.add("hidden");
+    if (!email || !password){
+      msg.textContent = "Isi email dan password.";
+      msg.classList.remove("hidden");
+      return;
+    }
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error){
+      msg.textContent = "Login gagal: " + error.message;
+      msg.classList.remove("hidden");
+      return;
+    }
+    showApp();
+  });
+
+  $("#logoutBtn").addEventListener("click", async () => {
+    await supabaseClient.auth.signOut();
+    showLogin();
+  });
+
+  /* ---------- tabs ---------- */
+  $$(".tabs .tab-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      $$(".tabs .tab-btn").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      $$(".tab-panel").forEach((p) => p.classList.remove("active"));
+      $("#tab-" + btn.dataset.tab).classList.add("active");
+    });
+  });
+
+  /* ---------- app init ---------- */
+  let initialized = false;
+  async function initApp(){
+    populateCategorySelect();
+    await Promise.all([loadDashboard(), loadProducts(), loadSettings()]);
+    initialized = true;
+  }
+
+  function populateCategorySelect(){
+    const sel = $("#formCategory");
+    sel.innerHTML = "";
+    CATEGORIES.filter((c) => c !== "All").forEach((c) => {
+      const opt = document.createElement("option");
+      opt.value = c; opt.textContent = c;
+      sel.appendChild(opt);
+    });
+  }
+
+  /* ==================== PRODUCTS ==================== */
+  async function loadProducts(){
+    const { data, error } = await supabaseClient
+      .from("products")
+      .select("*")
+      .order("product_number", { ascending: true });
+    if (error) { console.error(error); return; }
+    allProducts = data || [];
+    renderProductList();
+  }
+
+  function renderProductList(){
+    const q = $("#adminSearchInput").value.trim().toLowerCase();
+    const list = allProducts.filter((p) => {
+      if (!q) return true;
+      const cleaned = q.replace(/^#/, "").replace(/^0+(?=\d)/, "");
+      if (/^\d+$/.test(cleaned) && Number(cleaned) === p.product_number) return true;
+      return (p.name + " " + p.category).toLowerCase().includes(q);
+    });
+
+    const container = $("#adminProductList");
+    container.innerHTML = "";
+    if (list.length === 0){
+      container.innerHTML = `<p class="field-hint">Tidak ada produk.</p>`;
+      return;
+    }
+
+    list.forEach((p) => {
+      const views = analyticsCache.viewsByProduct[p.id] || 0;
+      const clicks = analyticsCache.clicksByProduct[p.id] || 0;
+      const ctr = views > 0 ? ((clicks / views) * 100).toFixed(1) + "%" : "–";
+
+      const el = document.createElement("div");
+      el.className = "prod-item";
+      el.innerHTML = `
+        <div class="prod-item-top">
+          <div>
+            <div class="pnum">${formatNumber(p.product_number)}</div>
+            <div class="pname">${escapeHtml(p.name)}</div>
+            <div class="pmeta">${escapeHtml(p.category)} ${p.price ? "· " + escapeHtml(p.price) : ""}</div>
+          </div>
+          <span class="status-badge ${p.status}">${p.status}</span>
+        </div>
+        <div class="prod-stats">
+          <span>Views: ${views}</span>
+          <span>Klik: ${clicks}</span>
+          <span>CTR: ${ctr}</span>
+        </div>
+        <div class="prod-actions">
+          <button class="btn ghost small" data-action="edit">Edit</button>
+          <button class="btn ghost small" data-action="toggle">${p.status === "active" ? "Sembunyikan" : "Aktifkan"}</button>
+          <button class="btn ghost small" data-action="copy">Copy Link</button>
+        </div>
+      `;
+      el.querySelector('[data-action="edit"]').addEventListener("click", () => openForm(p));
+      el.querySelector('[data-action="toggle"]').addEventListener("click", () => toggleStatus(p));
+      el.querySelector('[data-action="copy"]').addEventListener("click", () => copyProductLink(p));
+      container.appendChild(el);
+    });
+  }
+
+  $("#adminSearchInput").addEventListener("input", renderProductList);
+
+  async function toggleStatus(p){
+    const newStatus = p.status === "active" ? "hidden" : "active";
+    const { error } = await supabaseClient
+      .from("products")
+      .update({ status: newStatus })
+      .eq("id", p.id);
+    if (error){ alert("Gagal mengubah status: " + error.message); return; }
+    await loadProducts();
+  }
+
+  function copyProductLink(p){
+    const url = `${location.origin}${location.pathname.replace("admin.html","")}?produk=${p.product_number}`;
+    navigator.clipboard.writeText(url).then(
+      () => alert("Link disalin:\n" + url),
+      () => prompt("Copy manual link ini:", url)
+    );
+  }
+
+  /* ---------- add/edit form ---------- */
+  const formOverlay = $("#formOverlay");
+  function openForm(product){
+    currentEditId = product ? product.id : null;
+    pendingImageUrl = product ? product.image_url : null;
+
+    $("#formTitle").textContent = product ? "Edit Produk" : "Tambah Produk";
+    $("#formNumber").value = product ? product.product_number : "";
+    $("#formName").value = product ? product.name : "";
+    $("#formCategory").value = product ? product.category : CATEGORIES[1];
+    $("#formKeywords").value = product && product.keywords ? product.keywords.join(", ") : "";
+    $("#formPrice").value = product ? (product.price || "") : "";
+    $("#formDescription").value =
