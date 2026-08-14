@@ -188,6 +188,89 @@
 <script src="script.js"></script>
 </body>
 </html>
+    </div>
+
+    <div class="search-cats" id="searchCatRow"></div>
+
+    <div class="search-count" id="searchCount"></div>
+
+    <div class="grid search-grid" id="searchGrid"></div>
+
+    <div class="empty-state hidden" id="searchEmpty">
+      <p class="empty-title">Tidak ditemukan</p>
+      <p class="empty-sub">Coba kata kunci lain, atau cari pakai nomor produk seperti "020".</p>
+    </div>
+
+    <div class="empty-state" id="searchIdle">
+      <p class="empty-title">Cari sesuatu</p>
+      <p class="empty-sub">Ketik nomor produk, nama, atau keyword — misalnya "020" atau "sepatu".</p>
+    </div>
+  </div>
+
+  <!-- ============ PRODUCT DETAIL ============ -->
+  <div class="detail-view" id="detailView" aria-hidden="true">
+    <div class="detail-topbar">
+      <button class="icon-btn" id="detailBackBtn" aria-label="Kembali">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="icon-btn" id="detailSaveBtn" aria-label="Simpan produk">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 4h12v16l-6-4-6 4V4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="detail-body" id="detailBody"></div>
+    <div class="detail-cta">
+      <a href="#" id="detailCtaLink" class="cta-btn" target="_blank" rel="noopener sponsored">
+        <span id="detailCtaText">Lihat di Shopee</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<!-- SAVED VIEW -->
+<div class="saved-view" id="savedView" aria-hidden="true">
+  <header class="topbar">
+    <div class="brand"><span class="brand-name">Saved</span></div>
+    <button class="icon-btn" id="savedCloseBtn" aria-label="Tutup">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 6L6 15M6 6l9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </header>
+  <main class="main">
+    <div class="grid" id="savedGrid"></div>
+    <div class="empty-state hidden" id="savedEmpty">
+      <p class="empty-title">Belum ada yang disimpan</p>
+      <p class="empty-sub">Ketuk ikon bookmark di produk untuk menyimpannya di sini.</p>
+    </div>
+  </main>
+</div>
+
+<!-- product card template -->
+<template id="cardTemplate">
+  <article class="card" tabindex="0">
+    <div class="card-media">
+      <img loading="lazy" alt="" />
+      <button class="save-toggle" aria-label="Simpan produk">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 4h12v16l-6-4-6 4V4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="card-body">
+      <span class="card-id"></span>
+      <h3 class="card-name"></h3>
+      <div class="card-meta">
+        <span class="card-category"></span>
+        <span class="card-price"></span>
+      </div>
+    </div>
+  </article>
+</template>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="categories.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
   </header>
 
   <!-- MAIN SCROLLABLE CONTENT -->
